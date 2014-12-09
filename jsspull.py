@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 try:
 	import psycopg2
 except ImportError:
@@ -11,8 +12,6 @@ try:
 except ImportError:
 	print "NO jss!"
 	sys.exit(1)
-
-import sys
 
 ## Code taken from http://code.activatestate.com/recipes/577081-humanized-representation-of-a-number-of-bytes/
 def GetHumanReadable(size, precision=2):
