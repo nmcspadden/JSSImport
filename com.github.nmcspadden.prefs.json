@@ -1,0 +1,6 @@
+{
+	"postgres_host" : "db",
+	"postgres_user" : "saldbadmin",
+	"postgres_db" : "sal",
+	"postgres_password" : "password"
+}

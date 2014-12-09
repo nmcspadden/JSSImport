@@ -13,6 +13,9 @@ except ImportError:
 	print "NO jss!"
 	sys.exit(1)
 
+import os
+import json
+
 ## Code taken from http://code.activatestate.com/recipes/577081-humanized-representation-of-a-number-of-bytes/
 def GetHumanReadable(size, precision=2):
 	suffixes=['KB','MB','GB','TB']
@@ -23,10 +26,15 @@ def GetHumanReadable(size, precision=2):
 	return "%.*f %s"%(precision,size,suffixes[suffixIndex])
 
 ## Original code
-postgres_host = "host"
-postgres_user = "user"
-postgres_db = "db_name"
-postgres_password = "password"
+def OpenPrefsFile(preferences_file):
+	prefs = dict()
+	try:
+		with open(preferences_file) as json_file:
+			prefs = json.load(preferences_file)
+		return prefs
+	except:
+		print "Couldn't access com.github.nmcspadden.prefs.json"
+		sys.exit(1)
 
 #Initialize the SQL table
 def CreateCasperImportTable(conn):
@@ -35,7 +43,7 @@ def CreateCasperImportTable(conn):
 	cursor.execute(sql)
 
 ## Update the data in the SQL table
-def SubmitSQLForDevice(thisDevice, conn):
+def SubmitSQLForDevice(thisDevice, conn, j):
 	device_name = thisDevice['device_name']
 	device_username = thisDevice['username']
 		
@@ -74,8 +82,9 @@ LANGUAGE plpgsql; """
 
 ## Where the magic happens
 def main():
+	accessPreferences = OpenPrefsFile("com.github.nmcspadden.prefs.json")
 	try:
-		conn = psycopg2.connect(host=postgres_host, dbname=postgres_db, user=postgres_user, password=postgres_password)
+		conn = psycopg2.connect(host=accessPreferences['host'], dbname=accessPreferences['postgres_db'], user=accessPreferences['postgres_user'], password=accessPreferences['postgres_password'])
 	except psycopg2.Error, e:
 		print "Error %d: %s" % (e.args[0], e.args[1])
 		sys.exit(1)
@@ -84,7 +93,7 @@ def main():
 		jss_prefs = jss.JSSPrefs("com.github.sheagcraig.python-jss.plist")
 		j = jss.JSS(jss_prefs)
 	except:
-		print "Couldn't access preferences file."
+		print "Couldn't access JSS preferences file."
 		sys.exit(1)
 	
 	CreateCasperImportTable(conn)
@@ -92,7 +101,7 @@ def main():
 	deviceList = j.MobileDevice()
 
 	for device in deviceList:
-		SubmitSQLForDevice(device, conn)
+		SubmitSQLForDevice(device, conn, j)
 	
 	conn.commit()
 	
