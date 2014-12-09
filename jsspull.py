@@ -35,7 +35,7 @@ def CreateCasperImportTable(conn):
 	cursor.execute(sql)
 
 ## Update the data in the SQL table
-def SubmitSQLForDevice(thisDevice, conn):
+def SubmitSQLForDevice(thisDevice, conn, j):
 	device_name = thisDevice['device_name']
 	device_username = thisDevice['username']
 		
@@ -92,7 +92,7 @@ def main():
 	deviceList = j.MobileDevice()
 
 	for device in deviceList:
-		SubmitSQLForDevice(device, conn)
+		SubmitSQLForDevice(device, conn, j)
 	
 	conn.commit()
 	
