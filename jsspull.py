@@ -84,7 +84,7 @@ LANGUAGE plpgsql; """
 def main():
 	accessPreferences = OpenPrefsFile("com.github.nmcspadden.prefs.json")
 	try:
-		conn = psycopg2.connect(host=accessPreferences['host'], dbname=accessPreferences['postgres_db'], user=accessPreferences['postgres_user'], password=accessPreferences['postgres_password'])
+		conn = psycopg2.connect(host=accessPreferences['postgres_host'], dbname=accessPreferences['postgres_db'], user=accessPreferences['postgres_user'], password=accessPreferences['postgres_password'])
 	except psycopg2.Error, e:
 		print "Error %d: %s" % (e.args[0], e.args[1])
 		sys.exit(1)
