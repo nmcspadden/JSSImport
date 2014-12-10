@@ -30,10 +30,10 @@ def OpenPrefsFile(preferences_file):
 	prefs = dict()
 	try:
 		with open(preferences_file) as json_file:
-			prefs = json.load(preferences_file)
+			prefs = json.load(json_file)
 		return prefs
 	except:
-		print "Couldn't access com.github.nmcspadden.prefs.json"
+		print "Couldn't access prefs file with access info."
 		sys.exit(1)
 
 #Initialize the SQL table
