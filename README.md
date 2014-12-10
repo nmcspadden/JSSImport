@@ -1,7 +1,26 @@
 Sal - JSS Import
 ================
 
-Pulls data from Casper 9 to Sal DB for purpose of importing into WebHelpDesk
+Pulls data from Casper 9 to Sal DB for purpose of importing into WebHelpDesk.
+
+How To Use The Script:
+------
+
+jsspull.py supports three options:
+
+* --dbprefs "path/to/com.github.nmcspadden.prefs.json"
+	* This can be any JSON file that contains the appropriate settings like in the example prefs.json file.  
+	* Defaults to "com.github.nmcspadden.prefs.json" in the same directory as the script.
+* --jssprefs "path/to/com.github.sheagcraig.python-jss.plist"
+	* The Plist file that contains access information for python-jss.  See the [python-jss wiki](https://github.com/sheagcraig/python-jss/wiki/Configuration#supplying-credentials-to-the-jssprefs-object) for details. 
+	* Defaults to "com.github.sheagcraig.python-jss.plist" in the same directory as the script.
+* -v, --verbose
+	* Adds extra output so you can see the steps being taken by the script.
+
+`./jsspull.py --dbprefs "com.github.nmcspadden.prefs.json" --jssprefs "com.github.sheagcraig.python-jss.plist"`
+
+Background
+-----
 
 WebHelpDesk 12.1.0 has Casper 9 integration, but in my testing, it didn't work properly - it only accepts Computers and not Mobile Devices.  Since I use Casper as an iOS MDM only, this isn't very useful for me.  I wanted a way to pull all the data from Casper and import it into WHD automatically, on a regular schedule.
 
