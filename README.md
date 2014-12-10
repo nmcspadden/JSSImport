@@ -9,8 +9,6 @@ This tool has now been revised to work with Docker, although it should still wor
 
 I already make use of [Sal with WHD](https://github.com/nmcspadden/Sal-WHDImport), so I have a ready Postgres db that is already populated with Sal data.  
 
-It was easy to extend the db for more functionality.
-
 To use this tool to incorporate Casper 9 into WHD, you'll need a database already set up that you have access to.  If you are using Docker, I recommend using my [SalWHD container](https://github.com/nmcspadden/salWHD), which incorporates this already, and is designed to be easily linked to a Postgres-database.
 
 The script now takes care of creating the database table "casperimport" (although you could change this by editing the sql command inside the jsspull.py file).  The table should contain all the fields you want to pull, which in this case are:
