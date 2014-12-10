@@ -92,7 +92,7 @@ def main():
 	preferences_file = args.dbprefs or "com.github.nmcspadden.prefs.json"
 	jssprefs_file = args.jssprefs or "com.github.sheagcraig.python-jss.plist"
 	accessPreferences = OpenPrefsFile(preferences_file)
-	if args.verbosity > 0:
+	if args.verbose > 0:
 		print "Attempting to connect to Postgres Database..."
 	try:
 		conn = psycopg2.connect(host=accessPreferences['postgres_host'], dbname=accessPreferences['postgres_db'], user=accessPreferences['postgres_user'], password=accessPreferences['postgres_password'])
@@ -100,7 +100,7 @@ def main():
 		print "Error %d: %s" % (e.args[0], e.args[1])
 		sys.exit(1)
 
-	if args.verbosity > 0:
+	if args.verbose > 0:
 		print "Attempting to connect to JSS..."	
 	try:
 		jss_prefs = jss.JSSPrefs(jssprefs_file)
@@ -109,28 +109,28 @@ def main():
 		print "Couldn't access JSS preferences file."
 		sys.exit(1)
 	
-	if args.verbosity > 0:
+	if args.verbose > 0:
 		print "Attempting to create database table..." 
 
 	CreateCasperImportTable(conn)
 
-	if args.verbosity > 0:
+	if args.verbose > 0:
 		print "Attempting to access JSS device list..."
 
 	deviceList = j.MobileDevice()
 
-	if args.verbosity > 0:
+	if args.verbose > 0:
 		print "Parsing device list and adding to database."
 
 	for device in deviceList:
 		SubmitSQLForDevice(device, conn, j)
 	
-	if args.verbosity > 0:
+	if args.verbose > 0:
 		print "Committing database transactions..."
 
 	conn.commit()
 
-	if args.verbosity > 0:
+	if args.verbose > 0:
 		print "Done."
 
 	
