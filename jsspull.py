@@ -15,6 +15,12 @@ except ImportError:
 
 import os
 import json
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--dbprefs", help="Path to db prefs JSON file. Defaults to com.github.nmcspadden.prefs.json")
+parser.add_argument("--jssprefs", help="Path to Python-JSS prefs plist.  Defaults to com.github.sheagcraig.python-jss.plist")
+parser.add_argument("-v", "--verbose", action="count", default=0, help="Increase verbosity to print status updates")
 
 ## Code taken from http://code.activatestate.com/recipes/577081-humanized-representation-of-a-number-of-bytes/
 def GetHumanReadable(size, precision=2):
@@ -82,28 +88,51 @@ LANGUAGE plpgsql; """
 
 ## Where the magic happens
 def main():
-	accessPreferences = OpenPrefsFile("com.github.nmcspadden.prefs.json")
+	args = parser.parse_args()
+	preferences_file = args.dbprefs or "com.github.nmcspadden.prefs.json"
+	jssprefs_file = args.jssprefs or "com.github.sheagcraig.python-jss.plist"
+	accessPreferences = OpenPrefsFile(preferences_file)
+	if args.verbose > 0:
+		print "Attempting to connect to Postgres Database..."
 	try:
 		conn = psycopg2.connect(host=accessPreferences['postgres_host'], dbname=accessPreferences['postgres_db'], user=accessPreferences['postgres_user'], password=accessPreferences['postgres_password'])
 	except psycopg2.Error, e:
 		print "Error %d: %s" % (e.args[0], e.args[1])
 		sys.exit(1)
-	
+
+	if args.verbose > 0:
+		print "Attempting to connect to JSS..."	
 	try:
-		jss_prefs = jss.JSSPrefs("com.github.sheagcraig.python-jss.plist")
+		jss_prefs = jss.JSSPrefs(jssprefs_file)
 		j = jss.JSS(jss_prefs)
 	except:
 		print "Couldn't access JSS preferences file."
 		sys.exit(1)
 	
+	if args.verbose > 0:
+		print "Attempting to create database table..." 
+
 	CreateCasperImportTable(conn)
 
+	if args.verbose > 0:
+		print "Attempting to access JSS device list..."
+
 	deviceList = j.MobileDevice()
+
+	if args.verbose > 0:
+		print "Parsing device list and adding to database."
 
 	for device in deviceList:
 		SubmitSQLForDevice(device, conn, j)
 	
+	if args.verbose > 0:
+		print "Committing database transactions..."
+
 	conn.commit()
+
+	if args.verbose > 0:
+		print "Done."
+
 	
 #Time for magic to happen.
 main()
