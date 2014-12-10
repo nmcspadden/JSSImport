@@ -38,7 +38,7 @@ def OpenPrefsFile(preferences_file):
 
 #Initialize the SQL table
 def CreateCasperImportTable(conn):
-	sql = """CREATE TABLE casperimport(id INT PRIMARY KEY NOT NULL, serial TEXT, name TEXT, model TEXT, ios_version TEXT, ipaddress TEXT, macaddress TEXT, bluetooth TEXT, capacity TEXT, username TEXT, email TEXT, asset_tag TEXT);"""
+	sql = """CREATE TABLE IF NOT EXISTS casperimport(id INT PRIMARY KEY NOT NULL, serial TEXT, name TEXT, model TEXT, ios_version TEXT, ipaddress TEXT, macaddress TEXT, bluetooth TEXT, capacity TEXT, username TEXT, email TEXT, asset_tag TEXT);"""
 	cursor = conn.cursor()
 	cursor.execute(sql)
 
