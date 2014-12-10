@@ -15,6 +15,11 @@ except ImportError:
 
 import os
 import json
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--dbprefs", help="Path to db prefs JSON file. Defaults to com.github.nmcspadden.prefs.json")
+parser.add_argument("--jssprefs", help="Path to Python-JSS prefs plist.  Defaults to com.github.sheagcraig.python-jss.plist")
 
 ## Code taken from http://code.activatestate.com/recipes/577081-humanized-representation-of-a-number-of-bytes/
 def GetHumanReadable(size, precision=2):
@@ -82,7 +87,10 @@ LANGUAGE plpgsql; """
 
 ## Where the magic happens
 def main():
-	accessPreferences = OpenPrefsFile("com.github.nmcspadden.prefs.json")
+	args = parser.parse_args()
+	preferences_file = args.dbprefs or "com.github.nmcspadden.prefs.json"
+	jssprefs_file = args.jssprfes or "com.github.sheagcraig.python-jss.plist
+	accessPreferences = OpenPrefsFile(preferences_file)
 	try:
 		conn = psycopg2.connect(host=accessPreferences['postgres_host'], dbname=accessPreferences['postgres_db'], user=accessPreferences['postgres_user'], password=accessPreferences['postgres_password'])
 	except psycopg2.Error, e:
@@ -90,7 +98,7 @@ def main():
 		sys.exit(1)
 	
 	try:
-		jss_prefs = jss.JSSPrefs("com.github.sheagcraig.python-jss.plist")
+		jss_prefs = jss.JSSPrefs(jssprefs_file)
 		j = jss.JSS(jss_prefs)
 	except:
 		print "Couldn't access JSS preferences file."
