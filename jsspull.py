@@ -89,7 +89,7 @@ LANGUAGE plpgsql; """
 def main():
 	args = parser.parse_args()
 	preferences_file = args.dbprefs or "com.github.nmcspadden.prefs.json"
-	jssprefs_file = args.jssprfes or "com.github.sheagcraig.python-jss.plist
+	jssprefs_file = args.jssprfes or "com.github.sheagcraig.python-jss.plist"
 	accessPreferences = OpenPrefsFile(preferences_file)
 	try:
 		conn = psycopg2.connect(host=accessPreferences['postgres_host'], dbname=accessPreferences['postgres_db'], user=accessPreferences['postgres_user'], password=accessPreferences['postgres_password'])
